@@ -6,6 +6,7 @@
 *
 * Creation date: Mar/08/2018.
 * Revision date: Mar/09/2018. Game completed.
+* Revision date: Mar/10/2018. Corrections. Added geometrical city. Thicker sprites.
 *
 
 *
@@ -142,10 +143,7 @@ MAIN
         LWPI WRKSP   * set default workspace
 
         LI R0,>4400  * Bitmaps address (plus WR bit)
-        SWPB R0
-        MOVB R0,@VDPWA
-        SWPB R0
-        MOVB R0,@VDPWA
+        BL @SETVDP
 
         LI R1,SPRITES
         LI R2,256
@@ -154,34 +152,22 @@ L1      MOVB *R1+,@VDPWD
         JNE L1
 
         LI R0,>4BF8  * Bitmaps address (plus WR bit)
-        SWPB R0
-        MOVB R0,@VDPWA
-        SWPB R0
-        MOVB R0,@VDPWA
+        BL @SETVDP
 
         LI R1,BITMAPS
-        LI R2,8
+        LI R2,16
 L6      MOVB *R1+,@VDPWD
         DEC R2
         JNE L6
 
         LI R0,>8701  * R7 = $01 (black border)
-        SWPB R0
-        MOVB R0,@VDPWA
-        SWPB R0
-        MOVB R0,@VDPWA
+        BL @SETVDP
 
         LI R0,>81C2  * R1 = $C2 (16x16 sprites)
-        SWPB R0
-        MOVB R0,@VDPWA
-        SWPB R0
-        MOVB R0,@VDPWA
+        BL @SETVDP
 
         LI R0,>4380  * Color address (plus WR bit)
-        SWPB R0
-        MOVB R0,@VDPWA
-        SWPB R0
-        MOVB R0,@VDPWA
+        BL @SETVDP
 
         LI R1,COLORS
         LI R2,32
@@ -203,10 +189,7 @@ TITLE
         MOV R0,@SE2
 
         LI R0,>4300  * Color address (plus WR bit)
-        SWPB R0
-        MOVB R0,@VDPWA
-        SWPB R0
-        MOVB R0,@VDPWA
+        BL @SETVDP
 
         LI R1,>D100
         LI R2,128
@@ -215,10 +198,7 @@ L42     MOVB R1,@VDPWD
         JNE L42
 
         LI R0,>4000  * Screen address (plus WR bit)
-        SWPB R0
-        MOVB R0,@VDPWA
-        SWPB R0
-        MOVB R0,@VDPWA
+        BL @SETVDP
 
         LI R1,>2000
         LI R2,704
@@ -234,75 +214,31 @@ L4      MOVB R1,@VDPWD
 
         LI R0,>410B
         BL @SETVDP
-        LI R1,>4100
-        BL @WRTVDP
-        LI R1,>5300
-        BL @WRTVDP
-        LI R1,>5400
-        BL @WRTVDP
-        LI R1,>5200
-        BL @WRTVDP
-        LI R1,>4F00
-        BL @WRTVDP
-        LI R1,>2000
-        BL @WRTVDP
-        LI R1,>4300
-        BL @WRTVDP
-        LI R1,>5500
-        BL @WRTVDP
-        LI R1,>4200
-        BL @WRTVDP
-        LI R1,>4500
-        BL @WRTVDP
+        LI R1,MSG1
+        BL @WRTMSG
 
         LI R0,>414B
         BL @SETVDP
-        LI R1,>4000
-        BL @WRTVDP
-        LI R1,>4E00
-        BL @WRTVDP
-        LI R1,>4100
-        BL @WRTVDP
-        LI R1,>4E00
-        BL @WRTVDP
-        LI R1,>4F00
-        BL @WRTVDP
-        LI R1,>4300
-        BL @WRTVDP
-        LI R1,>4800
-        BL @WRTVDP
-        LI R1,>4500
-        BL @WRTVDP
-        LI R1,>5300
-        BL @WRTVDP
-        LI R1,>5300
-        BL @WRTVDP
+        LI R1,MSG2
+        BL @WRTMSG
 
         LI R0,>41AB
         BL @SETVDP
-        LI R1,>5000
-        BL @WRTVDP
-        LI R1,>5500
-        BL @WRTVDP
-        LI R1,>5300
-        BL @WRTVDP
-        LI R1,>4800
-        BL @WRTVDP
-        LI R1,>2000
-        BL @WRTVDP
-        LI R1,>5300
-        BL @WRTVDP
-        LI R1,>5000
-        BL @WRTVDP
-        LI R1,>4100
-        BL @WRTVDP
-        LI R1,>4300
-        BL @WRTVDP
-        LI R1,>4500
-        BL @WRTVDP
+        LI R1,MSG3
+        BL @WRTMSG
 
 L43
         BL @RANDOM
+        
+        MOV @FRAME,R1
+        SRL R1,8
+        ANDI R1,7
+        AI R1,SAVER
+        MOVB *R1,R0
+        SRL R0,8
+        AI R0,>8700
+        BL @SETVDP
+
         CLR R1         * Test column 0
         LI R12,>0024   * Address for column selection
         LDCR R1,3      * Select column
@@ -319,8 +255,31 @@ L44     MOVB R1,@VDPWD
         DEC R2
         JNE L44
 
+*
+* Create the great geometrical empire
+*
+        LI R4,>0
+L61     BL @RANDOM2
+        MOV @RAND,R2
+        ANDI R2,7
+        INC R2
+        MOV R4,R0
+        AI R0,>42A0
+        LI R1,>8000
+L62     BL @SETVDP
+        AI R0,>FFE0
+        MOVB R1,@VDPWD
+        DEC R2
+        JNE L62
+        INC R4
+        CI R4,32
+        JNE L61
+
         LI R2,>A178
         MOV R2,@TABLE
+
+        LI R0,>8701  * R7 = $01 (black border)
+        BL @SETVDP
 
         LI R0,1
         MOV R0,@LEVEL
@@ -356,18 +315,8 @@ L7      LI R2,>D100
         MOV R0,@ENTER
         LI R0,>42EC
         BL @SETVDP
-        LI R1,>4C00
-        BL @WRTVDP
-        LI R1,>4900
-        BL @WRTVDP
-        LI R1,>5600
-        BL @WRTVDP
-        LI R1,>4500
-        BL @WRTVDP
-        LI R1,>5300
-        BL @WRTVDP
-        LI R1,>2000
-        BL @WRTVDP
+        LI R1,MSG4
+        BL @WRTMSG
         MOV @LIVES,R1
         SLA R1,8
         AI R1,>3000
@@ -375,18 +324,8 @@ L7      LI R2,>D100
         MOV @LEVEL,R0
         LI R0,>42F8
         BL @SETVDP
-        LI R1,>4C00
-        BL @WRTVDP
-        LI R1,>4500
-        BL @WRTVDP
-        LI R1,>5600
-        BL @WRTVDP
-        LI R1,>4500
-        BL @WRTVDP
-        LI R1,>4C00
-        BL @WRTVDP
-        LI R1,>2000
-        BL @WRTVDP
+        LI R1,MSG5
+        BL @WRTMSG
         MOV @LEVEL,R0
         LI R1,>2F00
 L34     AI R1,>0100
@@ -920,6 +859,7 @@ RANDOM
 L11     DEC R0
         JNE L11
 
+RANDOM2
         INC @FRAME
         MOV @RAND,R1
         MOV R1,R2
@@ -948,12 +888,24 @@ WRTVDP
         MOVB R1,@VDPWD
         B *R11
 
-BITMAPS BYTE >60,>F0,>FC,>FF,>FF,>00,>00,>00
+*
+* Write a message to screen
+* Input: R1 = Address of message (first length then text)
+*
+WRTMSG  MOVB *R1+,R2
+        SRL R2,8
+L60     MOVB *R1+,@VDPWD
+        DEC R2
+        JNE L60
+        B *R11
 
-SPRITES BYTE >FF,>80,>80,>80,>80,>80,>80,>80
-        BYTE >80,>80,>80,>80,>80,>80,>80,>FF
-        BYTE >FF,>01,>01,>01,>01,>01,>01,>01
-        BYTE >01,>01,>01,>01,>01,>01,>01,>FF
+BITMAPS BYTE >F0,>F0,>0F,>0F,>00,>00,>00,>00
+        BYTE >08,>1C,>3E,>7F,>80,>C1,>E3,>F7
+
+SPRITES BYTE >FF,>FF,>C0,>C0,>C0,>C0,>C0,>C0
+        BYTE >C0,>C0,>C0,>C0,>C0,>C0,>FF,>FF
+        BYTE >FF,>FF,>03,>03,>03,>03,>03,>03
+        BYTE >03,>03,>03,>03,>03,>03,>FF,>FF
 
         BYTE >00,>00,>00,>00,>00,>01,>00,>01
         BYTE >00,>01,>00,>01,>00,>00,>00,>00
@@ -965,34 +917,46 @@ SPRITES BYTE >FF,>80,>80,>80,>80,>80,>80,>80
         BYTE >80,>80,>80,>C0,>C0,>C0,>C0,>e0
         BYTE >70,>78,>FC,>FE,>FF,>38,>38,>10
 
-        BYTE >00,>01,>01,>00,>00,>C0,>30,>00
+        BYTE >00,>03,>01,>00,>00,>C0,>30,>00
         BYTE >00,>00,>0C,>30,>00,>00,>01,>01
-        BYTE >00,>00,>00,>08,>10,>00,>00,>00
-        BYTE >0C,>03,>00,>00,>20,>10,>00,>00
+        BYTE >00,>00,>80,>08,>10,>00,>00,>00
+        BYTE >0C,>03,>00,>00,>30,>18,>00,>00
 
-        BYTE >00,>01,>02,>02,>04,>04,>08,>08
-        BYTE >10,>10,>20,>20,>40,>40,>80,>FF
-        BYTE >00,>80,>40,>40,>20,>20,>10,>10
-        BYTE >08,>08,>04,>04,>02,>02,>01,>FF
+        BYTE >00,>01,>03,>03,>06,>06,>0C,>0C
+        BYTE >18,>18,>30,>30,>60,>60,>FF,>FF
+        BYTE >00,>80,>C0,>C0,>60,>60,>30,>30
+        BYTE >18,>18,>0C,>0C,>06,>06,>FF,>FF
 
-        BYTE >01,>06,>18,>60,>80,>80,>80,>40
-        BYTE >40,>40,>20,>20,>20,>10,>10,>1F
-        BYTE >80,>60,>18,>06,>01,>01,>01,>02
-        BYTE >02,>02,>04,>04,>04,>08,>08,>F8
+        BYTE >01,>07,>1E,>78,>C0,>C0,>C0,>60
+        BYTE >60,>60,>30,>30,>30,>18,>1F,>1F
+        BYTE >80,>E0,>78,>1E,>03,>03,>03,>06
+        BYTE >06,>06,>0C,>0C,>0C,>18,>F8,>F8
 
-        BYTE >0F,>10,>10,>20,>20,>40,>40,>80
-        BYTE >80,>40,>40,>20,>20,>10,>10,>0F
-        BYTE >F0,>08,>08,>04,>04,>02,>02,>01
-        BYTE >01,>02,>02,>04,>04,>08,>08,>F0
+        BYTE >0F,>1F,>18,>30,>30,>60,>60,>C0
+        BYTE >C0,>60,>60,>30,>30,>18,>1F,>0F
+        BYTE >F0,>F8,>18,>0C,>0C,>06,>06,>03
+        BYTE >03,>06,>06,>0C,>0C,>18,>F8,>F0
 
-        BYTE >01,>06,>18,>20,>20,>40,>40,>80
-        BYTE >80,>40,>40,>20,>20,>10,>10,>0F
-        BYTE >80,>60,>18,>04,>04,>02,>02,>01
-        BYTE >01,>02,>02,>04,>04,>08,>08,>F0
+        BYTE >01,>07,>1E,>38,>30,>60,>60,>C0
+        BYTE >C0,>60,>60,>30,>30,>18,>1F,>0F
+        BYTE >80,>E0,>78,>1C,>0C,>06,>06,>03
+        BYTE >03,>06,>06,>0C,>0C,>18,>F8,>F0
 
 COLORS  BYTE >60,>60,>60,>60,>60,>60,>50,>50
         BYTE >90,>90,>90,>90,>60,>60,>60,>80
-        BYTE >60,>60,>60,>60,>60,>60,>60,>60
+        BYTE >40,>60,>60,>60,>60,>60,>60,>60
         BYTE >60,>60,>60,>60,>60,>60,>60,>60
 
+SAVER   BYTE >0C,>04,>06,>01,>0D,>02,>0E,>01
+
+MSG1    BYTE 10
+        TEXT "ASTRO CUBE"
+MSG2    BYTE 10
+        TEXT "@NANOCHESS"
+MSG3    BYTE 10
+        TEXT "PUSH SPACE"
+MSG4    BYTE 6
+        TEXT "LIVES "
+MSG5    BYTE 6
+        TEXT "LEVEL "
         END	
