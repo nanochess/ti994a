@@ -515,13 +515,13 @@ L25     CLR R3
         CI R4,>0C00
         JHE L26
 L32     CLR R1
-        MOVB @TABLE+2,R1
-        CI R1,>8C00        * Already explosion?
+        MOVB @TABLE+2,R3
+        CI R3,>8C00        * Already explosion?
         JEQ L26
-        LI R1,>8C0A        * Start explosion
-        MOV R1,@TABLE+2
-        LI R1,90
-        MOV R1,@EXIT
+        LI R3,>8C0A        * Start explosion
+        MOV R3,@TABLE+2
+        LI R3,90
+        MOV R3,@EXIT
         JMP L28
 
 L29     SB R6,R4
@@ -533,6 +533,10 @@ L27     SB R5,R3
         CI R3,>F400
         JL L26
         INCT R1
+        CLR R3
+        MOVB *R1,R3
+        CI R3,>8C00        * Already explosion?
+        JEQ L59
         BL @ADDSCO
         BL @UPDSCO
         LI R3,>8C06        * Start explosion
@@ -545,6 +549,7 @@ L27     SB R5,R3
         MOV R1,@PSG
         JMP L28
 
+L59     DECT R1
 L26     AI R1,4
         DEC R2
         JNE L25
