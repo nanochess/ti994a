@@ -28,6 +28,9 @@
 * Command-line: xas99.py -b -R hello.asm --base 0x6000
 * Run with Open Cartridge: http://js99er.net/
 *
+* For Classic99 emulator please uncomment the SAVE directive and reassemble
+* (requires 8K BIN image)
+*
 * TMS9900 processor reference:
 * http://www.unige.ch/medecine/nouspikel/ti99/assembly.htm
 *
@@ -93,6 +96,8 @@
 *
 
 * Next label: L47
+
+*       SAVE >6000,>8000   * Round it to 8K for GROM to work with Classic99
 
         AORG >6000
 
