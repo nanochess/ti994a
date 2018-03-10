@@ -16,10 +16,10 @@
 *
 * Press Space to fire, S and D to move left and right.
 *
-* Squares - 1 point
-* Triangles - 2 points
-* Pentagons and hexagons - 3 points
-* Heptagons - 5 points
+* Squares - 10 points
+* Triangles - 20 points
+* Pentagons and hexagons - 30 points
+* Heptagons - 50 points
 *
 
 *

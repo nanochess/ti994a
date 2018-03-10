@@ -13,7 +13,7 @@ The cartridges are loaded typically at >6000 thru >7FFF
 
   hello.asm      A simple Hello program
 
-  astrocube.asm  Astro Cube game wrote for the 4K compo
+  astrocube.asm  Astro Cube game written for the 4K compo
                  at Atariage. http://atariage.com/forums/topic/276364-4k-shortnsweet-game-contest-submissions/
 
 You'll find a short resume of TI99/4A hardware at the
