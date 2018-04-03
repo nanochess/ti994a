@@ -100,6 +100,12 @@
 
 *       SAVE >6000,>8000   * Round it to 8K for GROM to work with Classic99
 
+    .ifdef RPK
+
+        AORG >6030
+
+    .else
+
         AORG >6000
 
 *
@@ -119,6 +125,8 @@ PROG    DATA >0000  * Link to next item
         DATA MAIN   * Point to start address
         BYTE 10     * Name length
         TEXT 'ASTRO CUBE'    * Name
+
+    .endif
 
 WRKSP   EQU >8300    * Workspace 
 PSG     EQU >8400
