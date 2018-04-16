@@ -5,6 +5,7 @@
 * http://nanochess.org/
 *
 * Creation date: Mar/08/2018.
+* Revision date: Apr/03/2018. Now can be made RPK
 *
 
 *

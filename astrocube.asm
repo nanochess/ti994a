@@ -7,6 +7,7 @@
 * Creation date: Mar/08/2018.
 * Revision date: Mar/09/2018. Game completed.
 * Revision date: Mar/10/2018. Corrections. Added geometrical city. Thicker sprites.
+* Revision date: Apr/03/2018. Now can be made RPK
 *
 
 *
@@ -967,4 +968,5 @@ MSG4    BYTE 6
         TEXT "LIVES "
 MSG5    BYTE 6
         TEXT "LEVEL "
-        END	
+
+        END
